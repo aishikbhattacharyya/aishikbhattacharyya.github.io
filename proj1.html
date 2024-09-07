@@ -27,7 +27,7 @@
 <h1 align="middle">Project 1: Colorizing the Prokudin-Gorskii Photo Collection</h1>
 <h2 align="middle">Aishik Bhattacharyya</h2>
 
-<br><br>
+<br>
 
 <div>
 
@@ -39,7 +39,7 @@ Sergei Mikhailovich Prokudin-Gorskii, as early as 1907, had a visionary idea--to
 <h3 align="middle">Exhaustive Search Approach (Simple)</h3>
 
 To solve this issue, I exhaustively searched over a 15 by 15 pixel window using the L2 norm as my scoring metric. For the red and green channels, we look at 125 total possibilities each, shift the channel, and compare it to the blue channel with the aforementioned scoring metric.
-
+<br>
 This process should work in theory if an image is perfect, but that’s not how it was. I implemented this and kept getting blurry images because there were potential border artifacts such as dust or scanning issues. To solve this, I cropped the image’s borders by 15%.
 
 <div align="middle">
@@ -65,9 +65,9 @@ This process should work in theory if an image is perfect, but that’s not how 
 <h3 align="middle">Image Pyramid Approach (Advanced)</h3>
 
 The simple exhaustive approach has its limitations if the pixel displacement becomes too large. To solve this issue, I implemented an image pyramid, which represents an image at smaller scales and updates estimates as I go. This is particularly effective because we can find an estimate for alignment at a smaller image, where the shifts are also possibly smaller. This is then applied to larger images in a coarse-to-fine strategy. At the end, there are less shifts that need to be considered in the larger images. To implement this, I used my code from the simple approach--this will be referred to as the align function moving forward.
-\n
+<br>
 The user can pick how many levels it wants to iterate down recursively and the base case is when there are no more levels left to recur through, in which case we just call the basic align function. We take our two images and scale them down by half and call align on them. We rescale the resulting shift back and shift our original image by this. Then, we align this modified image once again to get our final shift at the current pyramid level. We continue this process until the base case.
-\n
+<br>
 I had an issue rendering emir.tif as seen below. To solve this issue, just cropping the image by 15% was not enough so I had to implement auto cropping with a Sobel filter. The Sobel filter uses edge detection to find boundaries where there is a significant change in intensity. This adds smoothing and reduces aliasing within the image, more specifically the black borders in the image. After implementing the filter, I was able to successfully render the emir.tif as seen below.
 
 <div align="middle">
@@ -96,6 +96,10 @@ I had an issue rendering emir.tif as seen below. To solve this issue, just cropp
         <img src="proj1_images/harvesters.jpg" align="middle" width="400px"/>
         <figcaption align="middle">Harvesters</figcaption>
 	    </td>
+	<td>
+        <img src="proj1_images/three_generations.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Three Generations</figcaption>
+      </td>
     </tr>
     <br>
     <tr>
@@ -129,10 +133,6 @@ I had an issue rendering emir.tif as seen below. To solve this issue, just cropp
     </tr>
     <br>
     <tr>
-      <td>
-        <img src="proj1_images/three_generations.jpg" align="middle" width="400px"/>
-        <figcaption align="middle">Three Generations</figcaption>
-      </td>
       <td>
         <img src="proj1_images/train.jpg" align="middle" width="400px"/>
         <figcaption align="middle">Train</figcaption>
