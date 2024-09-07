@@ -65,8 +65,25 @@ This process should work in theory if an image is perfect, but that’s not how 
 <h3 align="middle">Image Pyramid Approach (Advanced)</h3>
 
 The simple exhaustive approach has its limitations if the pixel displacement becomes too large. To solve this issue, I implemented an image pyramid, which represents an image at smaller scales and updates estimates as I go. This is particularly effective because we can find an estimate for alignment at a smaller image, where the shifts are also possibly smaller. This is then applied to larger images in a coarse-to-fine strategy. At the end, there are less shifts that need to be considered in the larger images. To implement this, I used my code from the simple approach--this will be referred to as the align function moving forward.
-
+\n
 The user can pick how many levels it wants to iterate down recursively and the base case is when there are no more levels left to recur through, in which case we just call the basic align function. We take our two images and scale them down by half and call align on them. We rescale the resulting shift back and shift our original image by this. Then, we align this modified image once again to get our final shift at the current pyramid level. We continue this process until the base case.
+\n
+I had an issue rendering emir.tif as seen below. To solve this issue, just cropping the image by 15% was not enough so I had to implement auto cropping with a Sobel filter. The Sobel filter uses edge detection to find boundaries where there is a significant change in intensity. This adds smoothing and reduces aliasing within the image, more specifically the black borders in the image. After implementing the filter, I was able to successfully render the emir.tif as seen below.
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="proj1_images/emir.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Emir.tif without Sobel filter</figcaption>
+	</td>
+      <td>
+	<img src="proj1_images/out_emir.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Emir.tif with Sobel filter</figcaption>
+	</td>
+    </tr>
+  </table>
+</div>
 
   <div align="middle">
   <table style="width=100%">
@@ -74,10 +91,6 @@ The user can pick how many levels it wants to iterate down recursively and the b
       <td>
         <img src="proj1_images/church.jpg" align="middle" width="400px"/>
         <figcaption align="middle">Church</figcaption>
-      </td>
-      <td>
-        <img src="proj1_images/emir.jpg" align="middle" width="400px"/>
-        <figcaption align="middle">Emir</figcaption>
       </td>
 	    <td>
         <img src="proj1_images/harvesters.jpg" align="middle" width="400px"/>
