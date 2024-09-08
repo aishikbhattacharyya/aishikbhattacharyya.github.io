@@ -40,7 +40,7 @@ To solve this issue, I exhaustively searched over a 15 by 15 pixel window using 
 <br>
 <br>
 This process should work in theory if an image is perfect, but that’s not how it was. I implemented this and kept getting blurry images because there were potential border artifacts such as dust or scanning issues. To solve this, I cropped the image’s borders by 15%.
-
+<br>
 <div align="middle">
   <table style="width=100%">
     <tr>
@@ -69,8 +69,8 @@ The simple exhaustive approach has its limitations if the pixel displacement bec
 The user can pick how many levels it wants to iterate down recursively and the base case is when there are no more levels left to recur through, in which case we just call the basic align function. We take our two images and scale them down by half and call align on them. We rescale the resulting shift back and shift our original image by this. Then, we align this modified image once again to get our final shift at the current pyramid level. We continue this process until the base case.
 <br>
 <br>
-I had an issue rendering emir.tif as seen below. To solve this issue, just cropping the image by 15% was not enough so I had to implement auto cropping with a Sobel filter. The Sobel filter uses edge detection to find boundaries where there is a significant change in intensity. This adds smoothing and reduces aliasing within the image, more specifically the black borders in the image. After implementing the filter, I was able to successfully render the emir.tif as seen below.
-
+I had an issue rendering emir.tif as seen below. To solve this issue, just cropping the image by 15% was not enough so I had to implement auto cropping with a Sobel filter. The Sobel filter uses edge detection to find boundaries where there is a significant change in intensity. This adds smoothing and reduces aliasing within the image, more specifically the black borders in the image. After implementing the filter, I was able to successfully render the emir.tif as seen below. Note that the rest of the images just had the pyramid algorithm run on it.
+<br>
 <div align="middle">
   <table style="width=100%">
     <tr>
@@ -80,7 +80,7 @@ I had an issue rendering emir.tif as seen below. To solve this issue, just cropp
 	</td>
       <td>
 	<img src="proj1_images/out_emir.jpg" align="middle" width="400px"/>
-        <figcaption align="middle">Emir.tif with Sobel filter</figcaption>
+        <figcaption align="middle">Emir.tif with Sobel filter (G: [49,24], R: [107,40])</figcaption>
 	</td>
     </tr>
   </table>
