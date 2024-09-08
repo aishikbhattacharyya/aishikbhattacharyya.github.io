@@ -32,8 +32,6 @@
 <h2 align="middle">Overview</h2>
 	
 Sergei Mikhailovich Prokudin-Gorskii, as early as 1907, had a visionary idea--to take three exposures of every scene onto a glass plate with a red, blue, and green filter. He traveled the world and took color photographs everywhere, including the only color portrait of Leo Tolstoy. To honor his commitment, the goal of this project is to take these digitized glass plate images and form a single RGB color image.
-<h2 align="middle">Section I: Rasterization</h2>
-
 <h3 align="middle">Exhaustive Search Approach (Simple)</h3>
 
 To solve this issue, I exhaustively searched over a 15 by 15 pixel window using the L2 norm as my scoring metric. For the red and green channels, we look at 125 total possibilities each, shift the channel, and compare it to the blue channel with the aforementioned scoring metric.
