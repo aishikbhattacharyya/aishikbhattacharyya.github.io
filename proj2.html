@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>
+  body {
+    padding: 100px;
+    width: 1000px;
+    margin: auto;
+    text-align: left;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    color: #121212;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+</style>
+<title>CS 180 Project 2</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+</head>
+
+
+<body>
+
+<h1 align="middle">CS 180: Intro to Computer Vision and Computational Photography, Fall 2024</h1>
+<h1 align="middle">Project 1: Colorizing the Prokudin-Gorskii Photo Collection</h1>
+<h2 align="middle">Aishik Bhattacharyya</h2>
+
+<div>
+
+<h2 align="middle">Overview</h2>
+	
+Sergei Mikhailovich Prokudin-Gorskii, as early as 1907, had a visionary idea--to take three exposures of every scene onto a glass plate with a red, blue, and green filter. He traveled the world and took color photographs everywhere, including the only color portrait of Leo Tolstoy. To honor his commitment, the goal of this project is to take these digitized glass plate images and form a single RGB color image.
+<h3 align="middle">Exhaustive Search Approach (Simple)</h3>
+
+To solve this issue, I exhaustively searched over a 15 by 15 pixel window using the L2 norm as my scoring metric. For the red and green channels, we look at 125 total possibilities each, shift the channel, and compare it to the blue channel with the aforementioned scoring metric.
+<br>
+<br>
+This process should work in theory if an image is perfect, but that’s not how it was. I implemented this and kept getting blurry images because there were potential border artifacts such as dust or scanning issues. To solve this, I cropped the image’s borders by 15%.
+<br>
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="proj1_images/out_cathedral.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Cathedral (G: [5,2], R: [12,3])</figcaption>
+	</td>
+      <td>
+	<img src="proj1_images/out_monastery.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Monastery (G: [-3,2], R: [3,2])</figcaption>
+	</td>
+	<td>
+	<img src="proj1_images/out_tobolsk.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Tobolsk (G: [3,3], R: [6,3])</figcaption>
+	</td>
+    </tr>
+  </table>
+</div>
+
+
+<h3 align="middle">Image Pyramid Approach (Advanced) + Bells & Whistles Auto Cropping</h3>
+
+The simple exhaustive approach has its limitations if the pixel displacement becomes too large. To solve this issue, I implemented an image pyramid, which represents an image at smaller scales and updates estimates as I go. This is particularly effective because we can find an estimate for alignment at a smaller image, where the shifts are also possibly smaller. This is then applied to larger images in a coarse-to-fine strategy. At the end, there are less shifts that need to be considered in the larger images. To implement this, I used my code from the simple approach--this will be referred to as the align function moving forward.
+<br>
+<br>
+The user can pick how many levels it wants to iterate down recursively and the base case is when there are no more levels left to recur through, in which case we just call the basic align function. We take our two images and scale them down by half and call align on them. We rescale the resulting shift back and shift our original image by this. Then, we align this modified image once again to get our final shift at the current pyramid level. We continue this process until the base case.
+<br>
+<br>
+I had an issue rendering emir.tif as seen below. To solve this issue, just cropping the image by 15% was not enough so I had to implement auto cropping with a Sobel filter. The Sobel filter uses edge detection to find boundaries where there is a significant change in intensity. This adds smoothing and reduces aliasing within the image, more specifically the black borders in the image. After implementing the filter, I was able to successfully render the emir.tif as seen below. Note that the rest of the images just had the pyramid algorithm run on it.
+<br>
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="proj1_images/emir.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Emir.tif without Sobel filter (G: [49,24], R: [112, -1050])</figcaption>
+	</td>
+      <td>
+	<img src="proj1_images/out_emir.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Emir.tif with Sobel filter (G: [49,24], R: [107,40])</figcaption>
+	</td>
+    </tr>
+  </table>
+</div>
+
+  <div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="proj1_images/church.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Church (G: [25,4], R: [58,-4])</figcaption>
+      </td>
+	    <td>
+        <img src="proj1_images/harvesters.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Harvesters (G: [60,17], R: [124,14])</figcaption>
+	    </td>
+	<td>
+        <img src="proj1_images/three_generations.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Three Generations (G: [53,14], R: [112,11])</figcaption>
+      </td>
+    </tr>
+    <br>
+    <tr>
+      <td>
+        <img src="proj1_images/icon.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Icon (G: [41,17], R: [90,23])</figcaption>
+      </td>
+      <td>
+        <img src="proj1_images/lady.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Lady (G: [52,9], R: [120,11])</figcaption>
+      </td>
+	    <td>
+        <img src="proj1_images/melons.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Melons (G: [82,10], R: [178,13])</figcaption>
+	    </td>
+    </tr>
+    <br>
+    <tr>
+      <td>
+        <img src="proj1_images/onion_church.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Onion Church (G: [52,26], R: [108,36])</figcaption>
+      </td>
+      <td>
+        <img src="proj1_images/sculpture.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Sculpture (G: [33,-11], R: [140,-27])</figcaption>
+      </td>
+	    <td>
+        <img src="proj1_images/self_portrait.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Self Portrait (G: [79,29], R: [176,37])</figcaption>
+	    </td>
+    </tr>
+    <br>
+    <tr>
+      <td>
+        <img src="proj1_images/train.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Train (G: [42,6], R: [87,32])</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>
+</html>
