@@ -24,7 +24,7 @@
 <body>
 
 <h1 align="middle">CS 180: Intro to Computer Vision and Computational Photography, Fall 2024</h1>
-<h1 align="middle">Project 1: Colorizing the Prokudin-Gorskii Photo Collection</h1>
+<h1 align="middle">Project 2: Fun with Filters and Frequencies!</h1>
 <h2 align="middle">Aishik Bhattacharyya</h2>
 
 <div>
@@ -32,12 +32,10 @@
 <h2 align="middle">Overview</h2>
 	
 Sergei Mikhailovich Prokudin-Gorskii, as early as 1907, had a visionary idea--to take three exposures of every scene onto a glass plate with a red, blue, and green filter. He traveled the world and took color photographs everywhere, including the only color portrait of Leo Tolstoy. To honor his commitment, the goal of this project is to take these digitized glass plate images and form a single RGB color image.
-<h3 align="middle">Exhaustive Search Approach (Simple)</h3>
+<h3 align="middle">Part 1: Fun with Filters</h3>
+<h4 align="middle">Part 1.1: Finite Difference Operator</h4>
 
-To solve this issue, I exhaustively searched over a 15 by 15 pixel window using the L2 norm as my scoring metric. For the red and green channels, we look at 125 total possibilities each, shift the channel, and compare it to the blue channel with the aforementioned scoring metric.
-<br>
-<br>
-This process should work in theory if an image is perfect, but that’s not how it was. I implemented this and kept getting blurry images because there were potential border artifacts such as dust or scanning issues. To solve this, I cropped the image’s borders by 15%.
+In Part 1.1, we initialize the finite difference operator D_x and D_y. This is relevant because these will help us calculate the changes of intensity throughout the image, which will help us identify the edges. Then, we take our image and apply the convolutions in the x and y directions and calculate every point’s magnitude to help us get the aforementioned intensity measurements. Finally, to get the edges, I qualitatively tested different thresholds until I got one that minimized noise and just the cameraman.<br>
 <br>
 <div align="middle">
   <table style="width=100%">
@@ -58,8 +56,7 @@ This process should work in theory if an image is perfect, but that’s not how 
   </table>
 </div>
 
-
-<h3 align="middle">Image Pyramid Approach (Advanced) + Bells & Whistles Auto Cropping</h3>
+<h4 align="middle">Part 1.2: Derivative of Gaussian (DoG) Filter</h4>
 
 The simple exhaustive approach has its limitations if the pixel displacement becomes too large. To solve this issue, I implemented an image pyramid, which represents an image at smaller scales and updates estimates as I go. This is particularly effective because we can find an estimate for alignment at a smaller image, where the shifts are also possibly smaller. This is then applied to larger images in a coarse-to-fine strategy. At the end, there are less shifts that need to be considered in the larger images. To implement this, I used my code from the simple approach--this will be referred to as the align function moving forward.
 <br>
