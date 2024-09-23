@@ -187,6 +187,8 @@ In Part 2.2, the goal is to create hybrid images by combining the high frequency
 
 <h4 align="middle">Part 2.3: Gaussian and Laplacian Stacks</h4>
 <br>
+In Part 2.3, I had to create my own Gaussian and Laplacian stacks and blend together two images with the help of these stacks. To create my stacks, I started by creating a Gaussian stack starting with the original image and creating a Gaussian kernel and convolving with it for all layers of the image. Then, I subtracted the most recent Gaussian value with the last one and continued doing so to create my Laplacian stack. To blend images, I got a Gaussian and Laplacian stack for the apple and orange, as well as created a vertical mask, which is half black and half white, and calculated its Gaussian stack. I kept track of my blended sum and at every depth level, I added the product of the current mask’s Gaussian layer and one image’s current laplacian level, as well as 1 minus the current mask’s Gaussian layer and the other image’s current laplacian level. I picked which one to multiply by based on which side was black and white. I kept a running sum and at the end I did the same process to the last Gaussian layer and added it to my final sum. I made sure to clip my values to make sure all the numbers were valid to output.
+<br>
 <div align="middle">
 <table style="width=100%">
     <tr>
