@@ -146,5 +146,28 @@ Then, I uploaded an image of a bird, with very sharp outlines, to see what would
 	</tr>
 </table>
 </div>
+
+<h4 align="middle">Part 2.2: Hybrid Images</h4>
+
+In Part 2.2, the goal is to create hybrid images by combining the high frequency portions of one image and the low frequency portions of another. Depending on the distance we end up looking at the final image, different parts will be highlighted and viewed. First, we must identify the points to align each image. For example, the cat image was roasted and the human face was not. For that combination of images, I chose to use their eyes for alignment. For the other ones, I picked the left eye and chin. Then, I used a Gaussian kernel to convolve the images and get its high and low frequency portions. Those portions are then combined to form the final image.<div align="middle">
+<br>
+<table style="width=100%">
+    <tr>
+	<td>
+        <img src="proj2_images/anakin1.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Anakin</figcaption>
+	</td>
+	<td>
+        <img src="proj2_images/vader1.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Darth Vader</figcaption>
+	</td>
+	<td>
+        <img src="proj2_images/anakinvader.jfif" align="middle" width="400px"/>
+        <figcaption align="middle">Combined</figcaption>
+	</td>
+	</tr>
+</table>
+</div>
+
 </body>
 </html>
