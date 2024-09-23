@@ -64,7 +64,7 @@ In Part 1.1, we initialize the finite difference operator D_x and D_y. This is r
 
 <h4 align="middle">Part 1.2: Derivative of Gaussian (DoG) Filter</h4>
 
-In Part 1.2, I used a Gaussian filter to create a blurred version of the image and repeated the procedure from Part 1.1. The key differences were that the initial blurring suppressed a lot of noise without messing up edge detection and the edges were more boldly outlined. Next, I tried to accomplish this with a single convolution by using a derivative of Gaussian filters. The outcome was the same as before.<br>
+In Part 1.2, I used a Gaussian filter to create a blurred version of the image and repeated the procedure from Part 1.1. The key differences were that the initial blurring suppressed a lot of noise without messing up edge detection and the edges were more boldly outlined.<br>
 <br>
 <div align="middle">
   <table style="width=100%">
@@ -103,5 +103,31 @@ Next, I tried to accomplish this with a single convolution by using a derivative
     </tr>
   </table>
 </div>
+
+<h3 align="middle">Part 2: Fun with Frequencies!</h3>
+<h4 align="middle">Part 2.1: Image "Sharpening"</h4>
+
+In Part 2.1, we aim to sharpen a blurry image. To sharpen an image, we need to take advantage of its high frequencies. This can be done by running an image through a low pass filter and then subtracting it from the original image. We take these high frequencies and amplify it so that the image appears sharper. Because this is a RGB image, we apply this sharpening filter to each layer and combine it all at the end.<br>
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+	<td>
+        <img src="proj2_images/taj.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Original</figcaption>
+	</td>
+	<td>
+        <img src="proj2_images/taj2.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">alpha=2</figcaption>
+	</td>
+	<td>
+        <img src="proj2_images/taj6.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">alpha=6/figcaption>
+	</td>
+	</tr>
+</table>
+</div>
+<br>
+Then, I uploaded an image of a bird, with very sharp outlines, to see what would happen if I took a sharp image, blurred it, and then sharpened it. The result was that the resulting image was a bit blurrier than the original. In the initial process of blurring, some fine details were lost and could not be recovered.
+
 </body>
 </html>
