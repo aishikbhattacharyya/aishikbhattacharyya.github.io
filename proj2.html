@@ -271,5 +271,38 @@ In Part 2.3, I had to create my own Gaussian and Laplacian stacks and blend toge
 <h4 align="middle">Part 2.4: Multiresolution Blending</h4>
 <br>
 In Part 2.4, I used all my logic from Part 2.3 with a little tweaks. The code from Part 2.3 works successfully to create the orapple, but that uses a trivial vertical mask. In my first test case, I try to put an open, smiling mouth on Doctor Strange. This required me to first create an irregular mask which highlights the mouth as white and the rest black. One error I ran into was not adding the blended sum properly because I was multiplying the wrong, switched mask values with their laplacian values, leading me to only see the mouth. After fixing that I got the following.<br>
+<br>
+<div align="middle">
+<table style="width=100%">
+    <tr>
+	<td>
+        <img src="proj2_images/spongebobFinal.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Spongebob</figcaption>
+	</td>
+	<td>
+        <img src="proj2_images/mcchickenFinal.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">McChicken</figcaption>
+	</td>
+	<td>
+        <img src="proj2_images/spongeChickenFinal.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">Spongebob Enamored by the McChicken</figcaption>
+	</td>
+	</tr>
+    <tr>
+	<td>
+        <img src="proj2_images/strange2.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Doctor Strange</figcaption>
+	</td>
+	<td>
+        <img src="proj2_images/mouthFinal.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Mouth</figcaption>
+	</td>
+	<td>
+        <img src="proj2_images/strangeFinal.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">Mouth on Doctor Strange</figcaption>
+	</td>
+	</tr>
+</table>
+</div>
 </body>
 </html>
