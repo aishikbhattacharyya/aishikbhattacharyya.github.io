@@ -30,11 +30,8 @@
 <div>
 
 <h2 align="middle">Overview</h2>
-	
-Sergei Mikhailovich Prokudin-Gorskii, as early as 1907, had a visionary idea--to take three exposures of every scene onto a glass plate with a red, blue, and green filter. He traveled the world and took color photographs everywhere, including the only color portrait of Leo Tolstoy. To honor his commitment, the goal of this project is to take these digitized glass plate images and form a single RGB color image.
-<h3 align="middle">Part 1: Fun with Filters</h3>
+In Project 2, we explore how to handle frequencies. From low pass filters to gaussian filters, there’s incredible ways we operate on images to sharpen or blur them. These initial steps can lead to something bigger, like blending together images to create something unique. Every process can be done meticulously and from scratch. One of the most rewarding parts of the project was constructing my own Gaussian and Laplacian stacks and using them to blend images.<h3 align="middle">Part 1: Fun with Filters</h3>
 <h4 align="middle">Part 1.1: Finite Difference Operator</h4>
-
 In Part 1.1, we initialize the finite difference operator D_x and D_y. This is relevant because these will help us calculate the changes of intensity throughout the image, which will help us identify the edges. Then, we take our image and apply the convolutions in the x and y directions and calculate every point’s magnitude to help us get the aforementioned intensity measurements. Finally, to get the edges, I qualitatively tested different thresholds until I got one that minimized noise and just the cameraman.<br>
 <br>
 <div align="middle">
