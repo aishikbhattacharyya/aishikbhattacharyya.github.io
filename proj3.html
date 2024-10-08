@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>
+  body {
+    padding: 100px;
+    width: 1000px;
+    margin: auto;
+    text-align: left;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    color: #121212;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+</style>
+<title>CS 180 Project 3</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+</head>
+
+
+<body>
+
+<h1 align="middle">CS 180: Intro to Computer Vision and Computational Photography, Fall 2024</h1>
+<h1 align="middle">Project 1: Face Morphing</h1>
+<h2 align="middle">Aishik Bhattacharyya</h2>
+
+<div>
+
+<h2 align="middle">Overview</h2>
+	
+Sergei Mikhailovich Prokudin-Gorskii, as early as 1907, had a visionary idea--to take three exposures of every scene onto a glass plate with a red, blue, and green filter. He traveled the world and took color photographs everywhere, including the only color portrait of Leo Tolstoy. To honor his commitment, the goal of this project is to take these digitized glass plate images and form a single RGB color image.
+
+<h3 align="middle">Part 1: Defining Correspondences</h3>
+First, I selected the two images I wished to combine and ensured that they are the same size. After that, I found corresponding points on each face that tells us where the faces match. I then added the four corners to the image so that the entire image is combined. Otherwise, I risk having part of the image combined and the rest of it being black. Lastly, I used Delaunay triangulation on the average of the two image’s corresponding points. The results on each face are below.
+
+<br>
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="proj1_images/out_cathedral.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Cathedral (G: [5,2], R: [12,3])</figcaption>
+	  </td>
+      <td>
+	<img src="proj1_images/out_monastery.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Monastery (G: [-3,2], R: [3,2])</figcaption>
+	</td>
+	<td>
+	<img src="proj1_images/out_tobolsk.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Tobolsk (G: [3,3], R: [6,3])</figcaption>
+	</td>
+    </tr>
+  </table>
+</div>
+
+<h3 align="middle">Part II: Computing the "Mid-Way Face"</h3>
+To compute the mid way face, there was a lot of intermediate space. First, I wrote a method to calculate the affine transformation matrix using the respective triangle points from one of the images and average points, as well as a function to calculate bilinear interpolation. I then wrote an inverse warping function. This function takes in an image, the points of all the triangles in that image, the points that make up the average triangles of both images, the affine transformation matrix, the resulting image (initially filled with 0s), and an optional index for debugging. First, this function calculates all the points within its respective triangle. Then, I loop over all the points within this triangle and use the affine transformation matrix to calculate the pixel location on the input image. With this location, I use bilinear interpolation to calculate the new RGB value and set it to its respective location in the final input image. Finally, I wrote a compute midway function, which takes in an image, its points, the triangles from Delaunay triangulation, and average points of both images. The function loops over every simplex from Delaunay triangulation, locates the triangle points from the input image and average image, and calculates the affine transformation matrix to pass into inverse warp.
+
+<br>
+  <div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="proj1_images/church.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Church (G: [25,4], R: [58,-4])</figcaption>
+      </td>
+	    <td>
+        <img src="proj1_images/harvesters.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Harvesters (G: [60,17], R: [124,14])</figcaption>
+	    </td>
+	</table>
+</div>
+
+<h3 align="middle">Part III: The Morph Sequence</h3>
+To generate the morph sequence, we take in both images, both images’ points, the triangles, and the warp and dissolve fractions. The function first warps the images into a shape determined by the warp fraction. Then, I run my compute midway function on both images and cross-dissolve the outputs with the dissolve fraction. Finally, I run this function at least 30 times and save the resulting images to output the morph gif below.
+
+<br>
+  <div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="proj1_images/church.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Church (G: [25,4], R: [58,-4])</figcaption>
+      </td>
+	    <td>
+        <img src="proj1_images/harvesters.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Harvesters (G: [60,17], R: [124,14])</figcaption>
+	    </td>
+	</table>
+</div>
+
+<h3 align="middle">Part IV: The "Mean Face" of a Population</h3>
+I use the FEI Face Database for this part. I had to implement code to process each image and its points to compute the average face. Morphing the faces into the average face used the previous part’s function. I also had to recalculate the points on the faces and my face with each other's respective geometries as seen below.
+
+<br>
+  <div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="proj1_images/church.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Church (G: [25,4], R: [58,-4])</figcaption>
+      </td>
+	    <td>
+        <img src="proj1_images/harvesters.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Harvesters (G: [60,17], R: [124,14])</figcaption>
+	    </td>
+	</table>
+</div>
+
+</body>
+</html>
