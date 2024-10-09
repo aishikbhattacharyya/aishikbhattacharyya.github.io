@@ -31,7 +31,7 @@
 
 <h2 align="middle">Overview</h2>
 	
-Sergei Mikhailovich Prokudin-Gorskii, as early as 1907, had a visionary idea--to take three exposures of every scene onto a glass plate with a red, blue, and green filter. He traveled the world and took color photographs everywhere, including the only color portrait of Leo Tolstoy. To honor his commitment, the goal of this project is to take these digitized glass plate images and form a single RGB color image.
+In this assignment, I accomplished a lot of image handling and morphing via my face, Ryan Gosling’s face, and the faces of many random people on the Internet. From computing an affine transformation matrix to meticulously implementing inverse warping, the images below do a good job at morphing correspondences to create a new face!  
 
 <h3 align="middle">Part 1: Defining Correspondences</h3>
 First, I selected the two images I wished to combine and ensured that they are the same size. After that, I found corresponding points on each face that tells us where the faces match. I then added the four corners to the image so that the entire image is combined. Otherwise, I risk having part of the image combined and the rest of it being black. Lastly, I used Delaunay triangulation on the average of the two image’s corresponding points. The results on each face are below.
