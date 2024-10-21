@@ -33,21 +33,18 @@
 	
 In this assignment, I accomplished a lot of image handling and morphing via my face, Ryan Gosling’s face, and the faces of many random people on the Internet. From computing an affine transformation matrix to meticulously implementing inverse warping, the images below do a good job at morphing correspondences to create a new face!  
 
-<h3 align="middle">Part 1: Shoot the Pictures</h3>
-First, I selected the two images I wished to combine and ensured that they are the same size. After that, I found corresponding points on each face that tells us where the faces match. I then added the four corners to the image so that the entire image is combined. Otherwise, I risk having part of the image combined and the rest of it being black. Lastly, I used Delaunay triangulation on the average of the two image’s corresponding points. The results on each face are below.
+<h3 align="middle">Part 1: Shoot the Pictures & Recovering Homographies</h3>
+Here are some pictures from the rooftop of an apartment.
 
+A homography is a 3x3 matrix which represents a transformation between a pair of images. We can recover a homography by using pairs of corresponding points. The points on the pictures above represent the corresponding points. To implement this function, I went through each pair of points and created a system of equations to obtain the homography matrix’s coefficients, of which there will be 9 values. I then solved it with a least squares solver and reshaped it into a 3x3 matrix.
 <br>
 <div align="middle">
   <table style="width=100%">
     <tr>
       <td>
-        <img src="proj3_images/me_part1.PNG" align="middle" width="400px"/>
+        <img src="proj4_images/part1im.PNG" align="middle" width="400px"/>
         <figcaption align="middle">Me</figcaption>
 	  </td>
-      <td>
-	<img src="proj3_images/ryan_part1.PNG" align="middle" width="400px"/>
-        <figcaption align="middle">Ryan</figcaption>
-	</td>
     </tr>
   </table>
 </div>
