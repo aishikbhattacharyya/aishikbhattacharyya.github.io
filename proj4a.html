@@ -43,11 +43,19 @@ A homography is a 3x3 matrix which represents a transformation between a pair of
     <tr>
       <td>
         <img src="proj4_images/part1im.PNG" align="middle" width="400px"/>
-        <figcaption align="middle">Me</figcaption>
+        <figcaption align="middle">Rooftop</figcaption>
 	  </td>
     </tr>
   </table>
 </div>
+<table style="width=100%">
+    <tr>
+      <td>
+        <img src="proj4_images/trees.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">Forest</figcaption>
+	  </td>
+    </tr>
+</table>
 
 <h3 align="middle">Warp the Images & Image Rectification</h3>
 For this we use a function that takes in an image and a homography matrix. I define the image’s corners in the same order I took the points in for image rectification. I then warped those corners with the input homography matrix and calculated a bounding box for my resulting image. Then, I found all the values within the bounding box and applied the inverse homography matrix to them. Finally, I ran interpolation with griddata to achieve the final result. To get the images for rectification, I found images with rectangles and chose its destination coordinates to be an arbitrary value found in the caption of the images below. My image took very high resolution images that the code couldn’t process, so I resized my images, resulting in a little blurriness. This is reflected in the rectified images as well.
