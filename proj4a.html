@@ -113,46 +113,6 @@ To blend images, I used some of my code from Project 2 as reference, particularl
 
 <h1 align="middle">Project 4B: Feature Matching for Autostitching</h1>
 <h3 align="middle">Harris Interest Point Detector</h3>
-We are given a function for this section that is able to detect Harris response values within an image, primarily using the corner_harris function from skimage.feature. Harris corners near the edge are discarded. Then, we essentially find the maxima across these values to identify the corner points. Importantly, we must input a grayscale image.
-<br>
-  <div align="middle">
-  <table style="width=100%">
-    <tr>
-      <td>
-        <img src="proj4_images/im4b1.PNG" align="middle" width="400px"/>
-        <figcaption align="middle">Naiive Harris Corner Detection</figcaption>
-      </td>
-  </table>
-</div>
-
-<h3 align="middle">Adaptive Non-Maximal Suppression</h3>
-To implement Adaptive Non-Maximal Suppression, we want to select a specific set of strong corners by applying a robust condition to filter and find those points. We find other corners within the image with stronger Harris value and keep track of the smallest distances to these stronger corners. Then, we can get however many of the strongest corners we’d like, leading to a more evenly distributed set of points as shown below.
-<br>
-  <div align="middle">
-  <table style="width=100%">
-    <tr>
-      <td>
-        <img src="proj4_images/im4b2.PNG" align="middle" width="400px"/>
-        <figcaption align="middle">ANMS Result</figcaption>
-      </td>
-  </table>
-</div>
-
-<h3 align="middle">Feature Descriptor Extraction + Matching</h3>
-Here, for every corner we found in Adaptive Non-Maximal Suppression, we see if a 40x40 window around the points fits within the image. If it does, downsample it and look at every 8x8 patch. Then, we normalize each of these patches and return a list of all these descriptors. We run this algorithm on both images to get two descriptor sets. Then, for feature descriptor matching, we look at the first image’s descriptor set and find the indices of the two nearest neighbors in the other image’s descriptor set. Next, we apply Lowe’s ratio test, which finds matches where the distance to the closest neighbor is significantly smaller. For all places where this condition is satisfied, we add its pair of indices.
-<br>
-  <div align="middle">
-  <table style="width=100%">
-    <tr>
-      <td>
-        <img src="proj4_images/im4b3.PNG" align="middle" width="400px"/>
-        <figcaption align="middle">Matching Points between both images</figcaption>
-      </td>
-  </table>
-</div>
-
-<h3 align="middle">RANSAC</h3>
-To implement 4-point RANSAC, we use steps outlined in lecture. In summary, we select four feature points at random, compute the homography, computer inliers that meet a specific distance condition, keep the largest set of inliers, and finally re-compute the least-squares H estimate on all the inliers. For each iteration, select 4 random correspondence points from the previous section and compute its homography. We use that H value to project the first image’s points onto the second image’s points. We calculate the distances between the projected and actual points for the second image and see which values are beneath the threshold. If the inlier count at this point of the iteration is more than we found previously, we update that counter and recalculate the resulting homography, which ultimately gets returned after all the iterations.
 
 </body>
 </html>
