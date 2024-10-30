@@ -1,131 +1,198 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <style>
-    body {
-      padding: 100px;
-      width: 1000px;
-      margin: auto;
-      text-align: left;
-      font-weight: 300;
-      font-family: 'Open Sans', sans-serif;
-      color: #121212;
-    }
-    h1, h2, h3, h4 {
-      font-family: 'Source Sans Pro', sans-serif;
-    }
-  </style>
-  <title>CS 180 Project 4</title>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+<style>
+  body {
+    padding: 100px;
+    width: 1000px;
+    margin: auto;
+    text-align: left;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    color: #121212;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+</style>
+<title>CS 180 Project 3</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
 </head>
+
 
 <body>
 
-<h1 align="center">CS 180: Intro to Computer Vision and Computational Photography, Fall 2024</h1>
-<h1 align="center">Project 4AB: Image Warping and Mosaicing</h1>
-<h2 align="center">Aishik Bhattacharyya</h2>
+<h1 align="middle">CS 180: Intro to Computer Vision and Computational Photography, Fall 2024</h1>
+<h1 align="middle">Project 3: Face Morphing</h1>
+<h2 align="middle">Aishik Bhattacharyya</h2>
 
 <div>
 
-<h2 align="center">Overview</h2>
+<h2 align="middle">Overview</h2>
 	
-<p>
-In this project, we focus on shooting our own images and finding correspondences between them to achieve several tasks. First, we warp images and calculate their rectification, which allows us to see images as if they were positioned directly in front of us, rather than at an angle. Second, we use this information to blend images together and form panoramic views.
-</p>
+In this assignment, I accomplished a lot of image handling and morphing via my face, Ryan Gosling’s face, and the faces of many random people on the Internet. From computing an affine transformation matrix to meticulously implementing inverse warping, the images below do a good job at morphing correspondences to create a new face!  
 
-<h3 align="center">Shoot the Pictures & Recovering Homographies</h3>
-<p>Here are some pictures from the rooftop of an apartment.</p>
+<h3 align="middle">Part 1: Defining Correspondences</h3>
+First, I selected the two images I wished to combine and ensured that they are the same size. After that, I found corresponding points on each face that tells us where the faces match. I then added the four corners to the image so that the entire image is combined. Otherwise, I risk having part of the image combined and the rest of it being black. Lastly, I used Delaunay triangulation on the average of the two image’s corresponding points. The results on each face are below.
 
-<p>
-A homography is a 3x3 matrix that represents a transformation between a pair of images. We can recover a homography by using pairs of corresponding points. The points on the pictures below represent these correspondences. To implement this function, I iterated through each pair of points, creating a system of equations to obtain the homography matrix’s coefficients (9 values). I then solved this with a least squares solver and reshaped it into a 3x3 matrix.
-</p>
-
-<div align="center">
-  <table style="width:100%">
+<br>
+<div align="middle">
+  <table style="width=100%">
     <tr>
       <td>
-        <img src="proj4_images/part1im.PNG" width="400px" alt="Rooftop"/>
-        <figcaption>Rooftop</figcaption>
-      </td>
+        <img src="proj3_images/me_part1.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">Me</figcaption>
+	  </td>
+      <td>
+	<img src="proj3_images/ryan_part1.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">Ryan</figcaption>
+	</td>
     </tr>
   </table>
 </div>
 
-<div align="center">
-  <table style="width:100%">
+<h3 align="middle">Part II: Computing the "Mid-Way Face"</h3>
+To compute the mid way face, there was a lot of intermediate space. First, I wrote a method to calculate the affine transformation matrix using the respective triangle points from one of the images and average points, as well as a function to calculate bilinear interpolation. I then wrote an inverse warping function. This function takes in an image, the points of all the triangles in that image, the points that make up the average triangles of both images, the affine transformation matrix, the resulting image (initially filled with 0s), and an optional index for debugging. First, this function calculates all the points within its respective triangle. Then, I loop over all the points within this triangle and use the affine transformation matrix to calculate the pixel location on the input image. With this location, I use bilinear interpolation to calculate the new RGB value and set it to its respective location in the final input image. Finally, I wrote a compute midway function, which takes in an image, its points, the triangles from Delaunay triangulation, and average points of both images. The function loops over every simplex from Delaunay triangulation, locates the triangle points from the input image and average image, and calculates the affine transformation matrix to pass into inverse warp.
+
+<br>
+  <div align="middle">
+  <table style="width=100%">
     <tr>
       <td>
-        <img src="proj4_images/trees.PNG" width="400px" alt="Forest"/>
-        <figcaption>Forest</figcaption>
+        <img src="proj3_images/ryan_me_part2.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">Mid way face of Ryan and I</figcaption>
       </td>
-      <td>
-        <img src="proj4_images/bushes.PNG" width="400px" alt="Bush and Water"/>
-        <figcaption>Bush and Water</figcaption>
-      </td>
-    </tr>
   </table>
 </div>
 
-<h3 align="center">Warp the Images & Image Rectification</h3>
-<p>
-For this step, we use a function that takes in an image and a homography matrix. I defined the image’s corners in the same order I took the points for image rectification. I then warped those corners with the input homography matrix and calculated a bounding box for the resulting image. Next, I applied the inverse homography matrix to all values within the bounding box and ran interpolation with griddata to obtain the final result. To obtain images for rectification, I used images with rectangles and set destination coordinates to arbitrary values mentioned in the image captions below. Since my images were of very high resolution and the code couldn’t process them, I resized them, resulting in some blurriness, as reflected in the rectified images.
-</p>
+<h3 align="middle">Part III: The Morph Sequence</h3>
+To generate the morph sequence, we take in both images, both images’ points, the triangles, and the warp and dissolve fractions. The function first warps the images into a shape determined by the warp fraction. Then, I run my compute midway function on both images and cross-dissolve the outputs with the dissolve fraction. Finally, I run this function at least 30 times and save the resulting images to output the morph gif below.
 
-<div align="center">
-  <table style="width:100%">
+<br>
+  <div align="middle">
+  <table style="width=100%">
     <tr>
       <td>
-        <img src="proj4_images/original1.png" width="400px" alt="Original Painting"/>
-        <figcaption>Original Painting</figcaption>
+        <img src="proj3_images/res2.gif" align="middle" width="400px, alt="GIF"/>
+        <figcaption align="middle">Morph Sequences of Ryan and I</figcaption>
       </td>
-      <td>
-        <img src="proj4_images/rectified1.png" width="400px" alt="Rectified Painting"/>
-        <figcaption>Rectified Painting</figcaption>
-      </td>
-    </tr>
-  </table>
+	</table>
 </div>
 
-<div align="center">
-  <table style="width:100%">
+<h3 align="middle">Part IV: The "Mean Face" of a Population</h3>
+I use the FEI Face Database for this part. I had to implement code to process each image and its points to compute the average face. Morphing the faces into the average face used the previous part’s function. I also had to recalculate the points on the faces and my face with each other's respective geometries as seen below.
+
+<br>
+  <div align="middle">
+  <table style="width=100%">
     <tr>
       <td>
-        <img src="proj4_images/ipad3.jpg" width="400px" alt="Original iPad"/>
-        <figcaption>Original iPad</figcaption>
+        <img src="proj3_images/avgface_part4.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">Average Face of Image Set</figcaption>
       </td>
-      <td>
-        <img src="proj4_images/rectified2.png" width="400px" alt="Rectified iPad"/>
-        <figcaption>Rectified iPad</figcaption>
-      </td>
-    </tr>
-  </table>
+</table>
 </div>
-
-<h3 align="center">Blending Images</h3>
-<p>
-To blend images, I referenced code from Project 2, especially for blending with Laplacian pyramids. The key difference in this project is computing a mask that allows both images to blend seamlessly. Previously, a half-white, half-black mask was used to blend half of an apple and half of an orange. Here, we calculate a distance map to define the blend impact across different parts of the image. Additionally, I created a canvas to hold both images, ensuring a true merge rather than an overlap.
-</p>
-
-<div align="center">
-  <table style="width:100%">
+<br>
+  <div align="middle">
+  <table style="width=100%">
     <tr>
       <td>
-        <img src="proj4_images/result1.png" width="400px" alt="Result 1"/>
-        <figcaption>Result 1</figcaption>
+        <img src="proj3_images/4a.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Image 4A</figcaption>
       </td>
+	<td>
+        <img src="proj3_images/face1_shape_part4.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">Image 4A Warped into Average Shape</figcaption>
+	</td>
+	</table>
+</div>
+<div align="middle">
+  <table style="width=100%">
+    <tr>
       <td>
-        <img src="proj4_images/result2.png" width="400px" alt="Result 2"/>
-        <figcaption>Result 2</figcaption>
+        <img src="proj3_images/5a.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Image 5A</figcaption>
       </td>
+	<td>
+        <img src="proj3_images/face4_shape_part4.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">Image 5A Warped into Average Shape</figcaption>
+	</td>
+	</table>
+</div>
+<div align="middle">
+  <table style="width=100%">
+    <tr>
       <td>
-        <img src="proj4_images/result3.png" width="400px" alt="Result 3"/>
-        <figcaption>Result 34</figcaption>
+        <img src="proj3_images/6a.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Image 6A</figcaption>
       </td>
-    </tr>
-  </table>
+	<td>
+        <img src="proj3_images/face5_shape_part4.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">Image 6A Warped into Average Shape</figcaption>
+	</td>
+	</table>
+</div>
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="proj3_images/7a.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Image 7A</figcaption>
+      </td>
+	<td>
+        <img src="proj3_images/face6_shape_part4.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">Image 7A Warped into Average Shape</figcaption>
+	</td>
+	</table>
+</div>
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="proj3_images/avgtome.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">Average face warped into my geometry</figcaption>
+      </td>
+	<td>
+        <img src="proj3_images/my_avg_part4.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">My face warped into average geometry</figcaption>
+	</td>
+	</table>
 </div>
 
+<h3 align="middle">Part V: Caricatures: Extrapolating from the Man</h3>
+I used different values to extrapolate from the average face and morph it into mine. The positive alpha value as shown below best represents the type of caricatures we’ve come to know. I use the formula of alpha times my points plus one minus alpha times the average points.
+<br>
+  <div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="proj3_images/positivealpha.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">Alpha = 1.5</figcaption>
+      </td>
+	<td>
+        <img src="proj3_images/minushalfalpha.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">Alpha = -0.5</figcaption>
+      </td>
+
+    </tr>
+</table>
+</div>
+
+<h3 align="middle">Bells & Whistles: Make a Morphing Music Video</h3>
+I chose to make a morphing music video with my roommates. The music used is the great "Perfect Timing" by Shedeur Sanders.
+<br>
+  <div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+	<video width="400px" controls>
+		<source src="proj3_images/perfecttimin.mp4" type="video/mp4">
+	</video>
+        <figcaption align="middle">Alpha = 1.5</figcaption>
+      </td>
+    </tr>
+</table>
 </div>
 </body>
 </html>
