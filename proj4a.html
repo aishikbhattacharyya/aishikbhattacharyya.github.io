@@ -110,6 +110,8 @@ To blend images, I used some of my code from Project 2 as reference, particularl
   </table>
 </div>
 
+<h1 align="middle">Project 4B: Feature Matching & Autostitching</h1>
+
 <h3 align="middle">Harris Corner Detection</h3>
 We are given a function for this section that is able to detect Harris response values within an image, primarily using the corner_harris function from skimage.feature. Harris corners near the edge are discarded. Then, we essentially find the maxima across these values to identify the corner points. Importantly, we must input a grayscale image.
 <br>
@@ -151,6 +153,24 @@ Here, for every corner we found in Adaptive Non-Maximal Suppression, we see if a
 
 <h3 align="middle">RANSAC</h3>
 To implement 4-point RANSAC, we use steps outlined in lecture. In summary, we select four feature points at random, compute the homography, computer inliers that meet a specific distance condition, keep the largest set of inliers, and finally re-compute the least-squares H estimate on all the inliers. For each iteration, select 4 random correspondence points from the previous section and compute its homography. We use that H value to project the first image’s points onto the second image’s points. We calculate the distances between the projected and actual points for the second image and see which values are beneath the threshold. If the inlier count at this point of the iteration is more than we found previously, we update that counter and recalculate the resulting homography, which ultimately gets returned after all the iterations.
+<br>
+  <div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="proj4_images/result1.png" align="middle" width="400px"/>
+        <figcaption align="middle">Result 1</figcaption>
+      </td>
+	<td>
+        <img src="proj4_images/result2.png" align="middle" width="400px"/>
+        <figcaption align="middle">Result 2</figcaption>
+      </td>
+	<td>
+        <img src="proj4_images/result3.png" align="middle" width="400px"/>
+        <figcaption align="middle">Result 3</figcaption>
+      </td>
+  </table>
+</div>
 
 <body>
 
