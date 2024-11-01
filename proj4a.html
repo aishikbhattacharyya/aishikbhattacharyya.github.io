@@ -28,8 +28,7 @@
 
 <h2 align="middle">Overview</h2>
 	
-In this project, we focus on shooting our own images and finding correspondences in between them to a lot of interesting things. First, we warp images and calculate its rectification, which allows us to see images as if they were posted in front of us, rather than in perspective. Second, we can use this information to blend images together and form panoramic views.
-
+In this project, we focus on shooting our own images and finding correspondences in between them to a lot of interesting things. First, we warp images and calculate its rectification, which allows us to see images as if they were posted in front of us, rather than in perspective. Second, we can use this information to blend images together and form panoramic views. We continued this in 4B, when we attempted to automate how we got our correspondence points and filtered them to get just the right amount in the right places.
 <h3 align="middle">Shoot the Pictures & Recovering Homographies</h3>
 Here are some pictures from the rooftop of an apartment.
 
@@ -171,6 +170,7 @@ To implement 4-point RANSAC, we use steps outlined in lecture. In summary, we se
       </td>
   </table>
 </div>
+The coolest thing in part 4B was implementing ANMS, which eliminated a lot of points and they were scattered pretty evenly across. This was a huge step in our correspondence point detection process.
 
 <body>
 
