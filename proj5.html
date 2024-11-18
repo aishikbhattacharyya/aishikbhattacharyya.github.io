@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>
+  body {
+    padding: 100px;
+    width: 1000px;
+    margin: auto;
+    text-align: left;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    color: #121212;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+</style>
+<title>CS 180 Project 5</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+</head>
+
+<h1 align="middle">CS 180: Intro to Computer Vision and Computational Photography, Fall 2024</h1>
+<h1 align="middle">Project 5: Fun With Diffusion Models!</h1>
+<h2 align="middle">Aishik Bhattacharyya</h2>
+
+<div>
+
+<h2 align="middle">Overview</h2>
+	
+In this project, we focus on shooting our own images and finding correspondences in between them to a lot of interesting things. First, we warp images and calculate its rectification, which allows us to see images as if they were posted in front of us, rather than in perspective. Second, we can use this information to blend images together and form panoramic views. We continued this in 4B, when we attempted to automate how we got our correspondence points and filtered them to get just the right amount in the right places.
+
+<h1 align="middle">Part A: The Power of Diffusion Models!</h1>
+
+<h3 align="middle">Setup</h3>
+Here are some pictures from the rooftop of an apartment.
+
+A homography is a 3x3 matrix which represents a transformation between a pair of images. We can recover a homography by using pairs of corresponding points. The points on the pictures above represent the corresponding points. To implement this function, I went through each pair of points and created a system of equations to obtain the homography matrix’s coefficients, of which there will be 9 values. I then solved it with a least squares solver and reshaped it into a 3x3 matrix.
+<br>
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="proj5_images/part0_1.PNG" align="middle" width="400px"/>
+        <figcaption align="middle"></figcaption>
+	  </td>
+    </tr>
+  </table>
+</div>
+
+<h3 align="middle">Warp the Images & Image Rectification</h3>
+For this we use a function that takes in an image and a homography matrix. I define the image’s corners in the same order I took the points in for image rectification. I then warped those corners with the input homography matrix and calculated a bounding box for my resulting image. Then, I found all the values within the bounding box and applied the inverse homography matrix to them. Finally, I ran interpolation with griddata to achieve the final result. To get the images for rectification, I found images with rectangles and chose its destination coordinates to be an arbitrary value found in the caption of the images below. My image took very high resolution images that the code couldn’t process, so I resized my images, resulting in a little blurriness. This is reflected in the rectified images as well.
+<br>
+  <div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="proj4_images/original1.png" align="middle" width="400px"/>
+        <figcaption align="middle">Original Painting</figcaption>
+      </td>
+	<td>
+        <img src="proj4_images/rectified1.png" align="middle" width="400px"/>
+        <figcaption align="middle">Rectified Painting</figcaption>
+      </td>
+  </table>
+<br>
+  <div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="proj4_images/ipad3.jpg" align="middle" width="400px"/>
+        <figcaption align="middle">Original iPad</figcaption>
+      </td>
+	<td>
+        <img src="proj4_images/rectified2.png" align="middle" width="400px"/>
+        <figcaption align="middle">Rectified iPad</figcaption>
+      </td>
+  </table>
+
+<h3 align="middle">Blending Images</h3>
+To blend images, I used some of my code from Project 2 as reference, particularly the part regarding blending with Laplacian pyramids. The key difference in this section is computing the mask that allows us to blend both images. Previously, it was a half white, half black mask because we wanted half of an apple and half of an orange. This time, we need to compute a distance map that determines how much of an impact the images should have in the blend for different parts of the total image. We also need to create a canvas that can hold both images, so we have a true merging of images, instead of one just overlapping the other.
+<br>
+  <div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="proj4_images/result1.png" align="middle" width="400px"/>
+        <figcaption align="middle">Result 1</figcaption>
+      </td>
+	<td>
+        <img src="proj4_images/result2.png" align="middle" width="400px"/>
+        <figcaption align="middle">Result 2</figcaption>
+      </td>
+	<td>
+        <img src="proj4_images/result3.png" align="middle" width="400px"/>
+        <figcaption align="middle">Result 3</figcaption>
+      </td>
+  </table>
+</div>
+
+<h1 align="middle">Project 4B: Feature Matching & Autostitching</h1>
+
+<h3 align="middle">Harris Corner Detection</h3>
+We are given a function for this section that is able to detect Harris response values within an image, primarily using the corner_harris function from skimage.feature. Harris corners near the edge are discarded. Then, we essentially find the maxima across these values to identify the corner points. Importantly, we must input a grayscale image.
+<br>
+  <div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="proj4_images/im4b1.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">Naiive Harris Corner Detection</figcaption>
+      </td>
+  </table>
+</div>
+
+<h3 align="middle">Adaptive Non-Maximal Suppression</h3>
+To implement Adaptive Non-Maximal Suppression, we want to select a specific set of strong corners by applying a robust condition to filter and find those points. We find other corners within the image with stronger Harris value and keep track of the smallest distances to these stronger corners. Then, we can get however many of the strongest corners we’d like, leading to a more evenly distributed set of points as shown below.
+<br>
+  <div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="proj4_images/im4b2.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">ANMS Result</figcaption>
+      </td>
+  </table>
+</div>
+
+<h3 align="middle">Feature Descriptor Extraction + Matching</h3>
+Here, for every corner we found in Adaptive Non-Maximal Suppression, we see if a 40x40 window around the points fits within the image. If it does, downsample it and look at every 8x8 patch. Then, we normalize each of these patches and return a list of all these descriptors. We run this algorithm on both images to get two descriptor sets. Then, for feature descriptor matching, we look at the first image’s descriptor set and find the indices of the two nearest neighbors in the other image’s descriptor set. Next, we apply Lowe’s ratio test, which finds matches where the distance to the closest neighbor is significantly smaller. For all places where this condition is satisfied, we add its pair of indices.
+<br>
+  <div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="proj4_images/im4b3.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">Matching Points between both images</figcaption>
+      </td>
+  </table>
+</div>
+
+<h3 align="middle">RANSAC</h3>
+To implement 4-point RANSAC, we use steps outlined in lecture. In summary, we select four feature points at random, compute the homography, computer inliers that meet a specific distance condition, keep the largest set of inliers, and finally re-compute the least-squares H estimate on all the inliers. For each iteration, select 4 random correspondence points from the previous section and compute its homography. We use that H value to project the first image’s points onto the second image’s points. We calculate the distances between the projected and actual points for the second image and see which values are beneath the threshold. If the inlier count at this point of the iteration is more than we found previously, we update that counter and recalculate the resulting homography, which ultimately gets returned after all the iterations.
+<br>
+  <div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="proj4_images/result1.png" align="middle" width="400px"/>
+        <figcaption align="middle">Result 1</figcaption>
+      </td>
+	<td>
+        <img src="proj4_images/result2.png" align="middle" width="400px"/>
+        <figcaption align="middle">Result 2</figcaption>
+      </td>
+	<td>
+        <img src="proj4_images/result3.png" align="middle" width="400px"/>
+        <figcaption align="middle">Result 3</figcaption>
+      </td>
+  </table>
+</div>
+The coolest thing in part 4B was implementing ANMS, which eliminated a lot of points and they were scattered pretty evenly across. This was a huge step in our correspondence point detection process.
+
+<body>
+
+</body>
+</html>
