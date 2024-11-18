@@ -49,14 +49,14 @@ A homography is a 3x3 matrix which represents a transformation between a pair of
 </div>
 
 <h3 align="middle">Part 1.1: Implementing the Forward Process</h3>
-In this part, we aim to take a clean image and produce a noisy image by sampling from a Gaussian. To accomplish this, I first get the alpha bar by getting the correct alpha_cumprod value at its respective timestep. Then, I calculate a random epsilon value and use all this info equation 2 to get the noisy spec.
+In this part, we aim to take a clean image and produce a noisy image by sampling from a Gaussian. To accomplish this, I first get the alpha bar by getting the correct alpha_cumprod value at its respective timestep. Then, I calculate a random epsilon value and use all this info in equation 2 to get the noisy image.
 <br>
   <div align="middle">
   <table style="width=100%">
     <tr>
       <td>
-        <img src="proj4_images/original1.png" align="middle" width="400px"/>
-        <figcaption align="middle">Original Painting</figcaption>
+        <img src="proj5_images/eq2.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">Equation 2</figcaption>
       </td>
 	<td>
         <img src="proj4_images/rectified1.png" align="middle" width="400px"/>
@@ -105,8 +105,8 @@ In this part, instead of one-step denoising, we plan to denoise iteratively. We 
   <table style="width=100%">
     <tr>
       <td>
-        <img src="proj4_images/im4b2.PNG" align="middle" width="400px"/>
-        <figcaption align="middle">ANMS Result</figcaption>
+        <img src="proj5_images/eq3.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">Equation 3</figcaption>
       </td>
   </table>
 </div>
