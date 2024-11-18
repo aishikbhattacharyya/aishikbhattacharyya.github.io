@@ -48,8 +48,8 @@ A homography is a 3x3 matrix which represents a transformation between a pair of
   </table>
 </div>
 
-<h3 align="middle">Warp the Images & Image Rectification</h3>
-For this we use a function that takes in an image and a homography matrix. I define the image’s corners in the same order I took the points in for image rectification. I then warped those corners with the input homography matrix and calculated a bounding box for my resulting image. Then, I found all the values within the bounding box and applied the inverse homography matrix to them. Finally, I ran interpolation with griddata to achieve the final result. To get the images for rectification, I found images with rectangles and chose its destination coordinates to be an arbitrary value found in the caption of the images below. My image took very high resolution images that the code couldn’t process, so I resized my images, resulting in a little blurriness. This is reflected in the rectified images as well.
+<h3 align="middle">Part 1.1: Implementing the Forward Process</h3>
+In this part, we aim to take a clean image and produce a noisy image by sampling from a Gaussian. To accomplish this, I first get the alpha bar by getting the correct alpha_cumprod value at its respective timestep. Then, I calculate a random epsilon value and use all this info equation 2 to get the noisy spec.
 <br>
   <div align="middle">
   <table style="width=100%">
@@ -63,22 +63,9 @@ For this we use a function that takes in an image and a homography matrix. I def
         <figcaption align="middle">Rectified Painting</figcaption>
       </td>
   </table>
-<br>
-  <div align="middle">
-  <table style="width=100%">
-    <tr>
-      <td>
-        <img src="proj4_images/ipad3.jpg" align="middle" width="400px"/>
-        <figcaption align="middle">Original iPad</figcaption>
-      </td>
-	<td>
-        <img src="proj4_images/rectified2.png" align="middle" width="400px"/>
-        <figcaption align="middle">Rectified iPad</figcaption>
-      </td>
-  </table>
-
-<h3 align="middle">Blending Images</h3>
-To blend images, I used some of my code from Project 2 as reference, particularly the part regarding blending with Laplacian pyramids. The key difference in this section is computing the mask that allows us to blend both images. Previously, it was a half white, half black mask because we wanted half of an apple and half of an orange. This time, we need to compute a distance map that determines how much of an impact the images should have in the blend for different parts of the total image. We also need to create a canvas that can hold both images, so we have a true merging of images, instead of one just overlapping the other.
+	  
+<h3 align="middle">Part 1.2: Classical Denoising</h3>
+Now, we use Gaussian blur filtering to try to remove the noise with a kernel size of 5 and sigma of 1. This is primarily accomplished using torchvision.transforms.functional.gaussian_blur.
 <br>
   <div align="middle">
   <table style="width=100%">
@@ -98,10 +85,8 @@ To blend images, I used some of my code from Project 2 as reference, particularl
   </table>
 </div>
 
-<h1 align="middle">Project 4B: Feature Matching & Autostitching</h1>
-
-<h3 align="middle">Harris Corner Detection</h3>
-We are given a function for this section that is able to detect Harris response values within an image, primarily using the corner_harris function from skimage.feature. Harris corners near the edge are discarded. Then, we essentially find the maxima across these values to identify the corner points. Importantly, we must input a grayscale image.
+<h3 align="middle">Part 1.3: One Step Denoising</h3>
+We use a pre-trained diffusion model to denoise, which is a UNet that’s been trained on a very large dataset. Using the UNet, we first estimate the noise in the noisy image. Then, we use the formula in equation 2 (as shown in 1.1) to create the clean image given the noisy image, using the noise estimate in the place of epsilon. This gives us a blurry image without the noise seen in 1.1, as well as providing a better output than 1.2.
 <br>
   <div align="middle">
   <table style="width=100%">
@@ -113,8 +98,8 @@ We are given a function for this section that is able to detect Harris response 
   </table>
 </div>
 
-<h3 align="middle">Adaptive Non-Maximal Suppression</h3>
-To implement Adaptive Non-Maximal Suppression, we want to select a specific set of strong corners by applying a robust condition to filter and find those points. We find other corners within the image with stronger Harris value and keep track of the smallest distances to these stronger corners. Then, we can get however many of the strongest corners we’d like, leading to a more evenly distributed set of points as shown below.
+<h3 align="middle">Part 1.4: Iterative Denoising</h3>
+In this part, instead of one-step denoising, we plan to denoise iteratively. We create a list of timesteps from 990 to 0, with intervals of 30. So at each denoising step, we use formula 3 to reduce the noise within the current iteration of the image. This is accomplished by calculating the alpha and beta values at the current and incoming timestep and running unet to get the noise estimate of the current image.
 <br>
   <div align="middle">
   <table style="width=100%">
@@ -126,8 +111,8 @@ To implement Adaptive Non-Maximal Suppression, we want to select a specific set 
   </table>
 </div>
 
-<h3 align="middle">Feature Descriptor Extraction + Matching</h3>
-Here, for every corner we found in Adaptive Non-Maximal Suppression, we see if a 40x40 window around the points fits within the image. If it does, downsample it and look at every 8x8 patch. Then, we normalize each of these patches and return a list of all these descriptors. We run this algorithm on both images to get two descriptor sets. Then, for feature descriptor matching, we look at the first image’s descriptor set and find the indices of the two nearest neighbors in the other image’s descriptor set. Next, we apply Lowe’s ratio test, which finds matches where the distance to the closest neighbor is significantly smaller. For all places where this condition is satisfied, we add its pair of indices.
+<h3 align="middle">Part 1.5: Diffusion Model Sampling</h3>
+I use torch.randn to make noise and then call the iterative_denoise from the last part to generate the image.
 <br>
   <div align="middle">
   <table style="width=100%">
@@ -139,9 +124,8 @@ Here, for every corner we found in Adaptive Non-Maximal Suppression, we see if a
   </table>
 </div>
 
-<h3 align="middle">RANSAC</h3>
-To implement 4-point RANSAC, we use steps outlined in lecture. In summary, we select four feature points at random, compute the homography, computer inliers that meet a specific distance condition, keep the largest set of inliers, and finally re-compute the least-squares H estimate on all the inliers. For each iteration, select 4 random correspondence points from the previous section and compute its homography. We use that H value to project the first image’s points onto the second image’s points. We calculate the distances between the projected and actual points for the second image and see which values are beneath the threshold. If the inlier count at this point of the iteration is more than we found previously, we update that counter and recalculate the resulting homography, which ultimately gets returned after all the iterations.
-<br>
+<h3 align="middle">Part 1.6: Classifier Free Guidance</h3>
+To use this technique, we use a lot of code written for iterative denoising. The difference is we have conditional and unconditional prompt embeddings. The unconditional prompt embedding is just null and we calculate the Unet for both these values instead of just one before. Then, we pull the noise estimates for both the Unets and use the formula below with the pre-specified scaling factor. The rest is the same.<br>
   <div align="middle">
   <table style="width=100%">
     <tr>
@@ -159,7 +143,6 @@ To implement 4-point RANSAC, we use steps outlined in lecture. In summary, we se
       </td>
   </table>
 </div>
-The coolest thing in part 4B was implementing ANMS, which eliminated a lot of points and they were scattered pretty evenly across. This was a huge step in our correspondence point detection process.
 
 <body>
 
