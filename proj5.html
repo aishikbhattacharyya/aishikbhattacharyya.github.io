@@ -89,6 +89,19 @@ We use a pre-trained diffusion model to denoise, which is a UNet that’s been t
       </td>
   </table>
 </div>
+
+4: Iterative Denoising</h3>
+In this part, instead of one-step denoising, we plan to denoise iteratively. We create a list of timesteps from 990 to 0, with intervals of 30. So at each denoising step, we use formula 3 to reduce the noise within the current iteration of the image. This is accomplished by calculating the alpha and beta values at the current and incoming timestep and running unet to get the noise estimate of the current image.
+<br>
+  <div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="proj5_images/eq3.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">Equation 3</figcaption>
+      </td>
+  </table>
+</div>
 <br>
   <div align="middle">
   <table style="width=100%">
@@ -100,7 +113,13 @@ We use a pre-trained diffusion model to denoise, which is a UNet that’s been t
 	<td>
         <img src="proj5_images/part1.4_clean.PNG" align="middle" width="400px"/>
         <figcaption align="middle">Final Image for Iterative Denoising</figcaption>
-      </td>
+</td>
+  </table>
+</div>
+<br>
+  <div align="middle">
+  <table style="width=100%">
+    <tr>
 	<td>
         <img src="proj5_images/part1.4_onestep.PNG" align="middle" width="400px"/>
         <figcaption align="middle">Final Image for Single Denoising Step</figcaption>
@@ -113,18 +132,8 @@ We use a pre-trained diffusion model to denoise, which is a UNet that’s been t
   </table>
 </div>
 
-<h3 align="middle">Part 1.4: Iterative Denoising</h3>
-In this part, instead of one-step denoising, we plan to denoise iteratively. We create a list of timesteps from 990 to 0, with intervals of 30. So at each denoising step, we use formula 3 to reduce the noise within the current iteration of the image. This is accomplished by calculating the alpha and beta values at the current and incoming timestep and running unet to get the noise estimate of the current image.
-<br>
-  <div align="middle">
-  <table style="width=100%">
-    <tr>
-      <td>
-        <img src="proj5_images/eq3.PNG" align="middle" width="400px"/>
-        <figcaption align="middle">Equation 3</figcaption>
-      </td>
-  </table>
-</div>
+
+<h3 align="middle">Part 1.
 
 <h3 align="middle">Part 1.5: Diffusion Model Sampling</h3>
 I use torch.randn to make noise and then call the iterative_denoise from the last part to generate the image.
