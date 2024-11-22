@@ -334,7 +334,7 @@ This was the coolest section to implement because we’re creating an optical il
 </div>
 
 <h3 align="middle">Part 1.9: Hybrid Anagrams</h3>
-Remember to change the captions for the last 4 images
+In this section, our goal is to trick the viewer into seeing a certain image up close and a different image further away. Once again, we use the cfg noise estimate from two pairs of conditional and unconditional prompt embeddings. To pull off this trick, for the image we want to see up close, we use a low pass filter and then for the one we want to see further away, we use a high pass filter. We combine these filters to get a new noise estimate and then continue our code. The formula is also below for reference.
 <div align="middle">
   <table style="width=100%">
     <tr>
@@ -357,6 +357,36 @@ Remember to change the captions for the last 4 images
 	<td>
         <img src="proj5_images/part1.10_skulldog.PNG" align="middle" width="400px"/>
         <figcaption align="middle">"a lithograph of a skull" and "a photo of a dog"</figcaption>
+      </td>
+  </table>
+</div>
+
+<h1 align="middle">Part B: Diffusion Models from Scratch!</h1>
+
+<h3 align="middle">Part 1: Training a Single-Step Denoising UNet</h3>
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+	<td>
+        <img src="proj5_images/part1.2_allnoise.PNG" align="middle" width="400px"/>
+        <figcaption align="middle"></figcaption>
+	</td>
+	<td>
+        <img src="proj5_images/part1.2.1_graph.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">Training Loss Curve Plot</figcaption>
+      </td>
+  </table>
+</div>
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+	<td>
+        <img src="proj5_images/part1.2.1_epoch0.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">Results after epoch 0</figcaption>
+	</td>
+	<td>
+        <img src="proj5_images/part1.2.1_epoch5.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">Results after epoch 5</figcaption>
       </td>
   </table>
 </div>
