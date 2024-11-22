@@ -391,21 +391,8 @@ In this part, our goal is to train a denoiser such that we can take in a noisy i
       </td>
   </table>
 </div>
-<div align="middle">
-  <table style="width=100%">
-    <tr>
-	<td>
-        <img src="proj5_images/part1.2_allnoise.PNG" align="middle" width="400px"/>
-        <figcaption align="middle"></figcaption>
-	</td>
-	<td>
-        <img src="proj5_images/part1.2.1_graph.PNG" align="middle" width="400px"/>
-        <figcaption align="middle">Training Loss Curve Plot</figcaption>
-      </td>
-  </table>
-</div>
 <br>
-Below is the test digit on varying levels of noises.
+Below is the test digit on varying levels of noises. The last one is for when it is at 1.0, the screenshot was cut off.
 <div align="middle">
   <table style="width=100%">
     <tr>
@@ -456,11 +443,31 @@ Below is the test digit on varying levels of noises.
 </div>
 
 <h3 align="middle">Part 2: Training a Diffusion Model</h3>
+In part 2.4, we add class-conditioning to the Unet, which requires adding two more FCBlocks that use the c paramter. Essentially we want a 10% dropout rate, where c gets set to zeros. We multiply the result of the FCBlock before adding the time conditioning result from the last part.
 <div align="middle">
   <table style="width=100%">
     <tr>
 	<td>
         <img src="proj5_images/part2.2_graph.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">Training Loss Curve Plot</figcaption>
+      </td>
+  </table>
+</div>
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+	<td>
+        <img src="proj5_images/part2.3_deliv.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">Results after epoch 0 (top) & epoch 5 (bottom)</figcaption>
+	</td>
+  </table>
+</div>
+After implementing class conditioning results below.
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+	<td>
+        <img src="proj5_images/part2.4_graph.PNG" align="middle" width="400px"/>
         <figcaption align="middle">Training Loss Curve Plot</figcaption>
       </td>
   </table>
