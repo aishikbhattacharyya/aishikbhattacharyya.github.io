@@ -364,6 +364,7 @@ In this section, our goal is to trick the viewer into seeing a certain image up 
 <h1 align="middle">Part B: Diffusion Models from Scratch!</h1>
 
 <h3 align="middle">Part 1: Training a Single-Step Denoising UNet</h3>
+In this part, our goal is to train a denoiser such that we can take in a noisy image and obtain a clean image by optimizing the L2 Loss. The Unet architecture has a lot of operations that we needed to implement such as ConvBlock and UpBlock. These operations had to be put in a specific order with the appropriate number of input and output channels. Once that was completed, we ran 5 epochs to train the model and all the results are below.
 <div align="middle">
   <table style="width=100%">
     <tr>
