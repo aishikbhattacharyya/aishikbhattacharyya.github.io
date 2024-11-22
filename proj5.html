@@ -161,6 +161,7 @@ To use this technique, we use a lot of code written for iterative denoising. The
 </div>
 
 <h3 align="middle">Part 1.7: Image-to-image Translation</h3>
+In this section, we add noise to an image and try to bring it back without any conditioning. The goal is to get back an image very close to the test image. Once again, we try this with a variety of noise levels.
 <div align="middle">
   <table style="width=100%">
     <tr>
@@ -187,6 +188,7 @@ To use this technique, we use a lot of code written for iterative denoising. The
 </div>
 
 <h3 align="middle">Part 1.7.1: Editing Hand-Drawn and Web Images</h3>
+Similar to the last part, we use the same prompt embeddings and iteratively denoise with cfg. However, now I’ve downloaded an image of Mike Wazowski and ran the forward method on it. We then run the method with varying i_start noise levels, ultimately showing that progression of images that leads to a Wazowski by the time it is 20. At the beginning with lower noise levels, there’s drastically different images.
 <div align="middle">
   <table style="width=100%">
     <tr>
@@ -213,6 +215,7 @@ To use this technique, we use a lot of code written for iterative denoising. The
 </div>
 
 <h3 align="middle">Part 1.7.2: Inpainting</h3>
+In this section, we have an image and a binary mask. The goal is to keep the image intact where the mask doesn’t exist and input a new image into the mask. In the example below, we have the Campanile whose top is masked and a new image has to be processed. We use a lot of logic from the iteratively denoised cfg method with some modifications at the end. We take the result of each iteration and then run the formula below with the original image. This becomes the new image we work on every iteration of the loop.
 <div align="middle">
   <table style="width=100%">
     <tr>
@@ -253,6 +256,7 @@ To use this technique, we use a lot of code written for iterative denoising. The
 </div>
 
 <h3 align="middle">Part 1.7.3: Text-Conditional Image-to-image Translation</h3>
+The logic of this section is essentially the same as 1.7.2, but instead we guide the projection with a text prompt by changing the prompt embedding. As you can see below, the image becomes more like what it should as the noise level increases.
 <div align="middle">
   <table style="width=100%">
     <tr>
@@ -278,7 +282,15 @@ To use this technique, we use a lot of code written for iterative denoising. The
 </div>
 
 <h3 align="middle">Part 1.8: Visual Anagrams</h3>
-Remember to change the captions for the last 4 images
+This was the coolest section to implement because we’re creating an optical illusion. At one orientation, the image looks like something, and then when it is flipped, it’s something entirely different. Once again, we use the logic behind iteratively denoising with cfg. Since we are creating two images in one, we need two conditional and unconditional prompt embeddings each. We use a pair containing one each to run the Unet twice and calculate that specific noise estimate, and then do it again on the second pair. When calculating these, we use the below formula. Most importantly, we must flip the image for the second Unet and then flip the outputs back. Once we have our two noise estimates, we calculate cfg noise estimate of each and then average those. That will be the noisy estimate for the image calculation.
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+	<td>
+        <img src="proj5_images/algorithm1.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">Part 1.8's Algorithm</figcaption>
+  </table>
+</div>
 <div align="middle">
   <table style="width=100%">
     <tr>
@@ -323,6 +335,14 @@ Remember to change the captions for the last 4 images
 
 <h3 align="middle">Part 1.9: Hybrid Anagrams</h3>
 Remember to change the captions for the last 4 images
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+	<td>
+        <img src="proj5_images/algorithm2.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">Part 1.9's Algorithm</figcaption>
+  </table>
+</div>
 <div align="middle">
   <table style="width=100%">
     <tr>
