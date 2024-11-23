@@ -444,7 +444,7 @@ Below is the test digit on varying levels of noises. The last one is for when it
 
 <h3 align="middle">Part 2: Training a Diffusion Model</h3>
 
-First, we had time conditioning to the Unet, which involves adding two FCBlocks based on t. We then add these results to the appropriate block based on the image from the spec. At this point, when we sample, we only include the unconditional value for epsilon. In part 2.4, we add class-conditioning to the Unet, which requires adding two more FCBlocks that use the c paramter. Essentially we want a 10% dropout rate, where c gets set to zeros. We multiply the result of the FCBlock before adding the time conditioning result from the last part.
+First, we add time conditioning to the Unet, which involves adding two FCBlocks based on t. We then add these results to the appropriate block based on the image from the spec. At this point, when we sample, we only include the unconditional value for epsilon. In part 2.4, we add class-conditioning to the Unet, which requires adding two more FCBlocks that use the c paramter. Essentially we want a 10% dropout rate, where c gets set to zeros. We multiply the result of the FCBlock before adding the time conditioning result from the last part.
 <div align="middle">
   <table style="width=100%">
     <tr>
