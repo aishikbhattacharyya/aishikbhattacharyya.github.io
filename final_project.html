@@ -1,1 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>
+  body {
+    padding: 100px;
+    width: 1000px;
+    margin: auto;
+    text-align: left;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    color: #121212;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+</style>
+<title>CS 180 Project 5</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+</head>
 
+<h1 align="middle">CS 180: Intro to Computer Vision and Computational Photography, Fall 2024</h1>
+<h1 align="middle">Final Project: Video Magnification</h1>
+<h2 align="middle">Aishik Bhattacharyya & Kaitlyn Chen</h2>
+
+<div>
+
+<h2 align="middle">Overview</h2>
+	
+The goal of Video Magnification is to emphasize certain visual aspects of a video such as blood flow. To amplify these parts, which are not easy to see with just the human eye, we examine changes at particular temporal frequencies. These frequencies correspond to a certain beats per minute. First, we build the laplacian pyramid as we did in a previous project. We first calculate the gaussian pyramid, downsampling each level. Then, to create the laplacian pyramid, we upsample and subtract consecutive gaussian levels. Next, we create the temporal filter. On every level of the laplacian stack, we convert to the frequency domain using FFT, apply a bandpass filter to its frequencies, convert it back to the time domain, amplify it and add it back to the original value. Finally, we reconstruct the image by looping over every frame, pulling its respective values from the laplacian stack and summing up its upsampled results. We use cv2 to read and write our videos.
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+	<td>
+        <img src="proj5_images/part2.5_epoch520.PNG" align="middle" width="400px"/>
+        <figcaption align="middle">Results after epoch 0 (top 4 rows) & epoch 5 (bottom 4 rows)</figcaption>
+	</td>
+  </table>
+</div>
+
+<body>
+
+</body>
+</html>
