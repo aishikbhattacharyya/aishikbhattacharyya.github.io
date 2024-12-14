@@ -29,7 +29,18 @@
 <h2 align="middle">Overview</h2>
 	
 The goal of Video Magnification is to emphasize certain visual aspects of a video such as blood flow. To amplify these parts, which are not easy to see with just the human eye, we examine changes at particular temporal frequencies. These frequencies correspond to a certain beats per minute. First, we build the laplacian pyramid as we did in a previous project. We first calculate the gaussian pyramid, downsampling each level. Then, to create the laplacian pyramid, we upsample and subtract consecutive gaussian levels. Next, we create the temporal filter. On every level of the laplacian stack, we convert to the frequency domain using FFT, apply a bandpass filter to its frequencies, convert it back to the time domain, amplify it and add it back to the original value. Finally, we reconstruct the image by looping over every frame, pulling its respective values from the laplacian stack and summing up its upsampled results. We use cv2 to read and write our videos.
-
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+	<video width="400px" controls>
+		<source src="finalproj_images/output_video19.mp4" type="video/mp4">
+	</video>
+        <figcaption align="middle">Depth=4, F_min=0.83, F_max=1, FPS=30, Alpha=10</figcaption>
+      </td>
+    </tr>
+</table>
+</div>
 <div align="middle">
   <table style="width=100%">
     <tr>
